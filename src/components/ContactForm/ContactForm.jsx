@@ -1,27 +1,51 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { AppContext } from '../../App';
+import { useParams, useNavigate } from 'react-router-dom';
 
+function ContactForm({dataForUserEdit}) {
+    const {addContact, editContact, contacts} = useContext(AppContext);
+    const {id} = useParams();
+    const nav = useNavigate();
+    const defUserDat= () => {
+        return{
+            firstName       : "",
+            lastName        : "",
+            street          : "",
+            city            : "",
+            gender          : "",
+            email           : "",
+            jobTitle        : "",
+            latitude        : 0,
+            longitude       : 0,
+            favouriteColour : "",
+            profileImage  : "",
+            id  : -1
+        }
+    }
+    const [newUser, setNewUser] = useState(defUserDat());
 
-function ContactForm() {
-    const [newUser, setNewUser] = useState({
-        firstName       : "",
-        lastName        : "",
-        street          : "",
-        city            : "",
-        gender          : "",
-        email           : "",
-        jobTitle        : "",
-        latitude        : 0,
-        longitude       : 0,
-        favoriteColor   : "",
-        profilePicture  : ""
-    });
-
-    const {addContact} = useContext(AppContext);
+    useEffect(() => {
+        if(contacts.length > 0 && id )
+        {
+            let usr = contacts.find(x=> x.id == Number(id));
+            setNewUser({...usr});
+            console.log(usr);
+        }
+        else if (!id)
+        {
+            setNewUser(defUserDat());
+        }
+    },
+    [id,contacts]
+    );
     const handleSubmit = (e) => {
         e.preventDefault();
-        addContact(newUser);
+        if(!id)
+            addContact(newUser);
+        else 
+            editContact(id, newUser);
         console.log(newUser);
+        nav("/")
     }
 
     const handleChange = (e, name, val) => {
@@ -36,25 +60,25 @@ function ContactForm() {
         return (
             <div className="contactField">
                 <label htmlFor={name}>{labelDisplay}</label>
-                <input type={type} {...extraInputArgs} name={name} onChange={(e) => handleChange(e, name, e.currentTarget.value)} required/>
+                <input type={type} {...extraInputArgs} name={name}  onChange={(e) => handleChange(e, name, e.currentTarget.value)} required/>
             </div>
         )
     }
     return (
         <form onSubmit={(e) => handleSubmit(e)}>
-            {getLabeledInput("firstName",       "First Name",       "text"   )}
-            {getLabeledInput("lastName",        "Last Name",        "text"   )}
-            {getLabeledInput("street",          "Street",           "text"   )}
-            {getLabeledInput("city",            "City",             "text"   )}
-            {getLabeledInput("gender",          "Gender",           "text"   )}
-            {getLabeledInput("email",           "Email",            "email"  )}
-            {getLabeledInput("jobTitle",        "Job Title",        "text"   )}
-            {getLabeledInput("latitude",        "Latitude",         "number" )}
-            {getLabeledInput("longitude",       "Longitude",        "number" )}
-            {getLabeledInput("favoriteColor",   "Favorite Color",   "color"  )}
-            {getLabeledInput("profilePicture",  "Profile Picture",  "text"   )}
+            {getLabeledInput("firstName",       "First Name",       "text"   , {value:newUser["firstName"]})}
+            {getLabeledInput("lastName",        "Last Name",        "text"   , {value:newUser["lastName"]})}
+            {getLabeledInput("street",          "Street",           "text"   , {value:newUser["street"]})}
+            {getLabeledInput("city",            "City",             "text"   , {value:newUser["city"]})}
+            {getLabeledInput("gender",          "Gender",           "text"   , {value:newUser["gender"]})}
+            {getLabeledInput("email",           "Email",            "email"  , {value:newUser["email"]})}
+            {getLabeledInput("jobTitle",        "Job Title",        "text"   , {value:newUser["jobTitle"]})}
+            {getLabeledInput("latitude",        "Latitude",         "number" , {value:newUser["latitude"]})}
+            {getLabeledInput("longitude",       "Longitude",        "number" , {value:newUser["longitude"]})}
+            {getLabeledInput("favouriteColour", "Favorite Color",   "color"  , {value:newUser["favouriteColour"]})}
+            {getLabeledInput("profileImage",    "Profile Image",    "text"   , {value:newUser["profileImage"]})}
 
-            <input type='submit' value={"Create Contact"}/>
+            <input type='submit' value={id == null ?"Create Contact": "Edit Contact"}/>
 
         </form>
     )

@@ -50,6 +50,7 @@ function ContactView() {
                 </div>
                 {getLabeled("latitude", `${contact.latitude}`)}
                 {getLabeled("longitude", `${contact.longitude}`)}
+                <iframe  src={`https://maps.google.com/maps?q=${contact.latitude}, ${contact.longitude}&output=embed`} width="600" height="450" ></iframe>
             </div>
         </div>
     )

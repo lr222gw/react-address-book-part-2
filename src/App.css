@@ -16,6 +16,5 @@
 }
 .contactField {
     width: max-content;
-    
-    
+    display: flow-root;
 }
