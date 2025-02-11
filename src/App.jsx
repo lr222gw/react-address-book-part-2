@@ -10,6 +10,7 @@ import ContactView from './components/ContactView/ContactView';
 export const AppContext = createContext()
 
 function App() {
+    const [newContact, setNewContact] = useState(null);
     const [contacts, setContacts] = useState([]);
     const [contactsInitialized, setContactsInitialized] = useState(false);
 
@@ -29,8 +30,38 @@ function App() {
     [contacts]
     );
 
+    useEffect(() => {
+        if(newContact == null) return;
+        const addContact = async() => {
+
+            fetch("https://boolean-uk-api-server.fly.dev/lr222gw/contact",
+                {
+                    method:"POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body : JSON.stringify(newContact)
+                }
+                )
+                .then(res => res.json())
+                .then((dat) => {
+                    console.log(dat);
+                    
+                    setContactsInitialized(false);
+                    setNewContact(null)
+                })
+        };
+        addContact();
+    },
+    [newContact]
+    );
+
+    const addContact = (_newContact) => {
+        setNewContact(_newContact);
+    };
+
     return (
-        <AppContext.Provider value={{contacts}}>
+        <AppContext.Provider value={{contacts, addContact}}>
             <p>Hello, world!</p>
             <ul>
                 <li><Link to={'/'}>Home</Link></li>

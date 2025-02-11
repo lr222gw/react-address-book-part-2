@@ -20,9 +20,7 @@ function ContactView() {
     const getLabeled = (labelName, value) => {
         return (
             <div className="contactField">
-                <label>
-                    {labelName}
-                </label>
+                <label>{labelName}</label>
                 <p>{`${value}`}</p>
             </div>
         )
@@ -31,15 +29,28 @@ function ContactView() {
     return (
         <div className='mb-3'>
             <h3>ContactView</h3>
-            {getLabeled("name", `${contact.firstName} ${contact.lastName}`)}
-            {getLabeled("gender", `${contact.gender}`)}
-            {getLabeled("email", `${contact.email}`)}
-            {getLabeled("address", `${contact.street}, ${contact.city}`)}
-            {getLabeled("job title", `${contact.jobTitle}`)}
-            {getLabeled("favorite color", `${contact.favouriteColour}`)}
-            
+            <div className="contactField_pic">
+                <img src={contact.profileImage}/>
+            </div>
+            <div>
+                {getLabeled("name", `${contact.firstName} ${contact.lastName}`)}
+                {getLabeled("gender", `${contact.gender}`)}
+                
+                <div className="contactField">
+                    <label>Email</label>
+                    <p style={{textTransform: 'lowercase'}}> {contact.email} </p>
+                </div>
 
+                {getLabeled("address", `${contact.street}, ${contact.city}`)}
+                {getLabeled("job title", `${contact.jobTitle}`)}
 
+                <div className="contactField">
+                    <label>Favorite Color</label>
+                    <p style={{backgroundColor: contact.favouriteColour}}> {contact.favouriteColour} </p>
+                </div>
+                {getLabeled("latitude", `${contact.latitude}`)}
+                {getLabeled("longitude", `${contact.longitude}`)}
+            </div>
         </div>
     )
 }
